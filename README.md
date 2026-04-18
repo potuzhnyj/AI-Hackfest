@@ -115,7 +115,8 @@ Your portfolio is stored in your browser's localStorage. You can:
 ## Project Structure
 
 ```
-├── index.html       # The entire app (~2437 lines)
+├── index.html       # The entire app (~2440 lines)
+├── logo.svg         # Project logo
 ├── portfolio.json   # Sample portfolio for import
 ├── README.md
 ├── LICENSE
