@@ -22,7 +22,7 @@ Runs entirely in your browser. No server needed.
 
 ## Setup
 
-1. Get a free Gemini API key at [https://aistudio.google.com/apikey]
+1. Get a free Gemini API key at `https://aistudio.google.com/apikey`
 2. Open `index.html` via a local server (see below) or visit the GitHub Pages link
 3. Paste your API key when prompted
 4. Start chatting
@@ -38,7 +38,7 @@ python3 -m http.server 8080
 npx serve .
 ```
 
-Then open [http://localhost:8080]
+Then open `http://localhost:8080`
 
 ## Deploy to GitHub Pages
 
