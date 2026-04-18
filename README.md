@@ -4,6 +4,8 @@ AI-powered personal investing assistant. Analyze stocks, review portfolios, and 
 
 Runs entirely in your browser. No server needed.
 
+[InvestAI](https://potuzhnyj.github.io/AI-Hackfest/)
+
 ## Features
 
 - **AI Chat** — streaming responses with markdown, tables, and code highlighting
