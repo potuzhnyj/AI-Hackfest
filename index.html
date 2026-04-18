@@ -10,8 +10,7 @@
   <meta property="og:title" content="InvestAI — Your Personal Investing Assistant">
   <meta property="og:description" content="AI-powered stock analysis, portfolio review, and market insights.">
   <meta property="og:type" content="website">
-  <link rel="icon"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>$</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
   <link id="hljs-theme" rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/github-dark-dimmed.min.css">
   <style>
@@ -67,15 +66,15 @@
       --surface-hover: rgba(255, 255, 255, 0.07);
       --border: rgba(255, 255, 255, 0.08);
       --border-light: rgba(255, 255, 255, 0.05);
-      --text: #fafafa;
+      --text: #FFFBF1;
       --text-dim: #a1a1aa;
       --text-muted: #71717a;
       --text-placeholder: #6b6b74;
-      --user-bg: #fafafa;
+      --user-bg: #FFFBF1;
       --user-text: #111;
-      --btn-bg: #fafafa;
+      --btn-bg: #FFFBF1;
       --btn-text: #111;
-      --btn-hover: #e4e4e7;
+      --btn-hover: #f0ece2;
       --code-bg: rgba(255, 255, 255, 0.06);
       --pre-bg: rgba(0, 0, 0, 0.3);
       --table-header: rgba(255, 255, 255, 0.03);
@@ -87,20 +86,20 @@
     }
 
     :root[data-theme="light"] {
-      --bg: #d8d8dc;
-      --surface: rgba(255, 255, 255, 0.55);
-      --surface-hover: rgba(255, 255, 255, 0.7);
+      --bg: #FFFBF1;
+      --surface: rgba(255, 251, 241, 0.55);
+      --surface-hover: rgba(255, 251, 241, 0.7);
       --border: rgba(0, 0, 0, 0.1);
       --border-light: rgba(0, 0, 0, 0.06);
-      --text: #1a1a1e;
-      --text-dim: #44444a;
-      --text-muted: #52525b;
-      --text-placeholder: #6b6b74;
-      --user-bg: #1a1a1e;
-      --user-text: #fafafa;
-      --btn-bg: #1a1a1e;
-      --btn-text: #fafafa;
-      --btn-hover: #333;
+      --text: #383838;
+      --text-dim: #505050;
+      --text-muted: #606060;
+      --text-placeholder: #787878;
+      --user-bg: #383838;
+      --user-text: #FFFBF1;
+      --btn-bg: #383838;
+      --btn-text: #FFFBF1;
+      --btn-hover: #4a4a4a;
       --code-bg: rgba(0, 0, 0, 0.06);
       --pre-bg: rgba(0, 0, 0, 0.04);
       --table-header: rgba(0, 0, 0, 0.03);
@@ -210,13 +209,7 @@
       width: 34px;
       height: 34px;
       border-radius: 10px;
-      background: var(--btn-bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--btn-text);
+      object-fit: cover;
     }
 
     .header h1 {
@@ -1071,7 +1064,7 @@
       align-items: center;
       justify-content: center;
       font-size: 18px;
-      color: #fff;
+      color: #FFFBF1;
       font-weight: 500;
     }
 
@@ -1285,7 +1278,6 @@
       .header .icon {
         width: 28px;
         height: 28px;
-        font-size: 13px;
         border-radius: 8px;
       }
 
@@ -1441,7 +1433,6 @@
       .header .icon {
         width: 26px;
         height: 26px;
-        font-size: 12px;
         border-radius: 7px;
       }
 
@@ -1525,7 +1516,7 @@
   </div>
 
   <header class="header" role="banner">
-    <div class="icon" aria-hidden="true">$</div>
+    <img class="icon" src="logo.svg" alt="InvestAI logo" aria-hidden="true">
     <h1>InvestAI</h1>
     <nav class="header-actions" aria-label="Actions">
       <button class="header-btn" id="exportBtn" onclick="exportChat()" aria-label="Export chat">

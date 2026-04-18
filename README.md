@@ -1,6 +1,10 @@
-# InvestAI
+<p align="center">
+  <img src="logo.svg" alt="InvestAI logo" width="128">
+</p>
 
-AI-powered personal investing assistant. Analyze stocks, review portfolios, and get market insights — all in a single HTML file.
+<h1 align="center">InvestAI</h1>
+
+<p align="center">AI-powered personal investing assistant. Analyze stocks, review portfolios, and get market insights — all in a single HTML file.</p>
 
 Runs entirely in your browser. No server needed.
 
