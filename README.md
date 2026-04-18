@@ -104,7 +104,7 @@ Your portfolio is stored in your browser's localStorage. You can:
 
 | Layer      | Tech                                                     |
 |------------|----------------------------------------------------------|
-| AI         | Google Gemini 3.1 Pro via browser SDK                    |
+| AI         | Google Gemini 3 Flash via browser SDK                    |
 | Search     | Google Search grounding for real-time market data        |
 | Frontend   | Vanilla HTML / CSS / JS (single file)                    |
 | Markdown   | marked.js + DOMPurify + highlight.js                     |
