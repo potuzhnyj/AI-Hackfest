@@ -2044,7 +2044,18 @@ Keep responses well-structured with markdown formatting. Use tables, headers, an
         showWelcome();
         input.focus();
       } catch (err) {
-        errorEl.textContent = "Invalid API key or connection error. Please check and try again.";
+        const m = err.message || "";
+        if (m.includes("429") || m.includes("rate") || m.includes("quota")) {
+          errorEl.textContent = "Daily rate limit reached (free tier: ~20 requests/day). Wait a few minutes or try tomorrow.";
+        } else if (m.includes("API key") || m.includes("401") || m.includes("403")) {
+          errorEl.textContent = "Invalid API key. Double-check it at aistudio.google.com/apikey.";
+        } else if (m.includes("404") || m.includes("not found")) {
+          errorEl.textContent = "Model not available. Your API key may not have access to this model.";
+        } else if (m.includes("fetch") || m.includes("network") || m.includes("Failed")) {
+          errorEl.textContent = "Network error — check your internet connection and try again.";
+        } else {
+          errorEl.textContent = `Connection error: ${m}`;
+        }
         errorEl.style.display = "block";
       } finally {
         btn.textContent = "Save & Start";
