@@ -2291,6 +2291,7 @@ Keep responses well-structured with markdown formatting. Use tables, headers, an
             <span class="holding-ticker">${esc(h.name)}</span>
             <span class="holding-detail">${esc(h.notes || "")}</span>
             <span class="holding-value">${val}</span>
+            <button class="holding-remove" data-other="${esc(h.name)}" title="Remove" aria-label="Remove ${esc(h.name)} from portfolio">&times;</button>
           </div>`;
         }
       }
@@ -2298,6 +2299,9 @@ Keep responses well-structured with markdown formatting. Use tables, headers, an
 
       container.querySelectorAll(".holding-remove[data-ticker]").forEach(btn => {
         btn.addEventListener("click", () => removeStock(btn.dataset.ticker));
+      });
+      container.querySelectorAll(".holding-remove[data-other]").forEach(btn => {
+        btn.addEventListener("click", () => removeOther(btn.dataset.other));
       });
     }
 
@@ -2377,6 +2381,14 @@ Keep responses well-structured with markdown formatting. Use tables, headers, an
       if (!confirm(`Remove ${ticker} from portfolio?`)) return;
       const p = getPortfolio();
       p.holdings = p.holdings.filter(h => h.ticker.toUpperCase() !== ticker.toUpperCase());
+      savePortfolio(p);
+      loadPortfolio();
+    }
+
+    function removeOther(name) {
+      if (!confirm(`Remove ${name} from portfolio?`)) return;
+      const p = getPortfolio();
+      p.non_stock_holdings = (p.non_stock_holdings || []).filter(h => h.name !== name);
       savePortfolio(p);
       loadPortfolio();
     }
