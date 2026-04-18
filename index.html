@@ -1601,6 +1601,7 @@
         <div class="panel-footer-actions">
           <button onclick="document.getElementById('portfolioImport').click()">Import JSON</button>
           <button onclick="exportPortfolio()">Export JSON</button>
+          <button onclick="removeAll()" style="color:var(--red)">Remove All</button>
         </div>
         <button class="add-btn" onclick="toggleAddForm()">+ Add Holding</button>
         <div class="add-form" id="addForm">
@@ -2033,6 +2034,9 @@ Keep responses well-structured with markdown formatting. Use tables, headers, an
         initAI(key);
         messagesEl.innerHTML = "";
         showWelcome();
+        input.disabled = false;
+        input.placeholder = "Message InvestAI...";
+        form.querySelector("button[type='submit']").disabled = false;
         input.focus();
       } catch (err) {
         const m = err.message || "";
@@ -2200,6 +2204,13 @@ Keep responses well-structured with markdown formatting. Use tables, headers, an
 
     // ── New chat ──
     window.newChat = function () {
+      if (chatMessages.length === 0) {
+        if (ai) showWelcome();
+        else showSetupScreen();
+        return;
+      }
+      const action = confirm("Current chat will be deleted. Press OK to continue or Cancel to go back and export it first.");
+      if (!action) return;
       chatMessages = []; saveChat();
       history.length = 0;
       messagesEl.innerHTML = "";
@@ -2393,6 +2404,12 @@ Keep responses well-structured with markdown formatting. Use tables, headers, an
       loadPortfolio();
     }
 
+    window.removeAll = function () {
+      if (!confirm("Remove ALL holdings from your portfolio? This cannot be undone.")) return;
+      savePortfolio({ ...EMPTY_PORTFOLIO });
+      loadPortfolio();
+    };
+
     // ── Portfolio import/export ──
     document.getElementById("portfolioImport").addEventListener("change", (e) => {
       const file = e.target.files[0];
@@ -2445,6 +2462,9 @@ Keep responses well-structured with markdown formatting. Use tables, headers, an
       }
     } else {
       showSetupScreen();
+      input.disabled = true;
+      input.placeholder = "Enter your API key first...";
+      form.querySelector("button[type='submit']").disabled = true;
     }
   </script>
 </body>
