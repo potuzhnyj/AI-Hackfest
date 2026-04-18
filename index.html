@@ -2032,7 +2032,7 @@ Keep responses well-structured with markdown formatting. Use tables, headers, an
       try {
         const testAI = new GoogleGenAI({ apiKey: key });
         const res = await testAI.models.generateContent({
-          model: "gemini-3-flash-preview",
+          model: "gemini-3-pro-preview",
           contents: "Reply with just the word OK",
         });
         if (!res.text) throw new Error("No response");
@@ -2115,7 +2115,7 @@ Keep responses well-structured with markdown formatting. Use tables, headers, an
           : SYSTEM_PROMPT;
 
         const response = await ai.models.generateContentStream({
-          model: "gemini-3-flash-preview",
+          model: "gemini-3-pro-preview",
           config: { systemInstruction, tools: [{ googleSearch: {} }] },
           contents,
         });
@@ -2334,7 +2334,7 @@ Keep responses well-structured with markdown formatting. Use tables, headers, an
         (async () => {
           try {
             const res = await ai.models.generateContent({
-              model: "gemini-3-flash-preview",
+              model: "gemini-3-pro-preview",
               contents: `What is the current stock price of ${savedTicker} in USD? Reply with ONLY the number, nothing else. Example: 187.42`,
               config: { tools: [{ googleSearch: {} }] },
             });
