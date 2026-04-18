@@ -1,0 +1,2402 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>InvestAI | AI Hackfest</title>
+  <meta name="description"
+    content="AI-powered personal investing assistant. Analyze stocks, review portfolios, and get market insights.">
+  <meta property="og:title" content="InvestAI — Your Personal Investing Assistant">
+  <meta property="og:description" content="AI-powered stock analysis, portfolio review, and market insights.">
+  <meta property="og:type" content="website">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>$</text></svg>">
+  <link id="hljs-theme" rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/github-dark-dimmed.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    textarea:focus-visible,
+    input:focus-visible,
+    [role="button"]:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: 2px;
+      border-radius: 8px;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 16px;
+      padding: 8px 16px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border-radius: 8px;
+      font-size: 14px;
+      z-index: 200;
+      text-decoration: none;
+    }
+
+    .skip-link:focus {
+      top: 12px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #0c0c0f;
+      --surface: rgba(255, 255, 255, 0.04);
+      --surface-hover: rgba(255, 255, 255, 0.07);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-light: rgba(255, 255, 255, 0.05);
+      --text: #fafafa;
+      --text-dim: #a1a1aa;
+      --text-muted: #71717a;
+      --text-placeholder: #6b6b74;
+      --user-bg: #fafafa;
+      --user-text: #111;
+      --btn-bg: #fafafa;
+      --btn-text: #111;
+      --btn-hover: #e4e4e7;
+      --code-bg: rgba(255, 255, 255, 0.06);
+      --pre-bg: rgba(0, 0, 0, 0.3);
+      --table-header: rgba(255, 255, 255, 0.03);
+      --green: #22c55e;
+      --red: #ef4444;
+      --blob-1: rgba(59, 130, 246, 0.12);
+      --blob-2: rgba(139, 92, 246, 0.10);
+      --blob-3: rgba(6, 182, 212, 0.08);
+    }
+
+    :root[data-theme="light"] {
+      --bg: #d8d8dc;
+      --surface: rgba(255, 255, 255, 0.55);
+      --surface-hover: rgba(255, 255, 255, 0.7);
+      --border: rgba(0, 0, 0, 0.1);
+      --border-light: rgba(0, 0, 0, 0.06);
+      --text: #1a1a1e;
+      --text-dim: #44444a;
+      --text-muted: #52525b;
+      --text-placeholder: #6b6b74;
+      --user-bg: #1a1a1e;
+      --user-text: #fafafa;
+      --btn-bg: #1a1a1e;
+      --btn-text: #fafafa;
+      --btn-hover: #333;
+      --code-bg: rgba(0, 0, 0, 0.06);
+      --pre-bg: rgba(0, 0, 0, 0.04);
+      --table-header: rgba(0, 0, 0, 0.03);
+      --green: #16a34a;
+      --red: #dc2626;
+      --blob-1: rgba(139, 92, 246, 0.15);
+      --blob-2: rgba(59, 130, 246, 0.12);
+      --blob-3: rgba(236, 72, 153, 0.08);
+    }
+
+    /* ── Animated background ── */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .bg-layer::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--bg);
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      animation: drift 25s ease-in-out infinite;
+    }
+
+    .blob-1 {
+      width: 600px;
+      height: 600px;
+      background: var(--blob-1);
+      top: -15%;
+      left: -10%;
+      animation-delay: 0s;
+    }
+
+    .blob-2 {
+      width: 500px;
+      height: 500px;
+      background: var(--blob-2);
+      bottom: -10%;
+      right: -5%;
+      animation-delay: -8s;
+    }
+
+    .blob-3 {
+      width: 450px;
+      height: 450px;
+      background: var(--blob-3);
+      top: 40%;
+      left: 55%;
+      animation-delay: -16s;
+    }
+
+    @keyframes drift {
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      25% {
+        transform: translate(40px, -30px) scale(1.05);
+      }
+
+      50% {
+        transform: translate(-20px, 25px) scale(0.95);
+      }
+
+      75% {
+        transform: translate(30px, 40px) scale(1.03);
+      }
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ── Header ── */
+    .header {
+      padding: 14px 24px;
+      padding-top: max(14px, env(safe-area-inset-top));
+      padding-left: max(24px, env(safe-area-inset-left));
+      padding-right: max(24px, env(safe-area-inset-right));
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-light);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .header .icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--btn-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--btn-text);
+    }
+
+    .header h1 {
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: -0.3px;
+    }
+
+    .header-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+      flex-wrap: nowrap;
+    }
+
+    .header-btn {
+      all: unset;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-family: inherit;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .header-btn:hover {
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .header-btn.active {
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    /* ── App layout ── */
+    .app-layout {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+      min-width: 0;
+    }
+
+    .chat-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* ── Messages ── */
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .msg {
+      max-width: 72%;
+      line-height: 1.65;
+      font-size: 14px;
+      animation: fadeUp 0.3s ease;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .user {
+      align-self: flex-end;
+      background: var(--user-bg);
+      color: var(--user-text);
+      padding: 11px 16px;
+      border-radius: 18px 18px 4px 18px;
+      font-weight: 450;
+      white-space: pre-wrap;
+    }
+
+    .user img {
+      max-width: 220px;
+      max-height: 160px;
+      border-radius: 10px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .ai {
+      align-self: flex-start;
+      padding: 4px 0;
+      color: var(--text-dim);
+      position: relative;
+    }
+
+    .ai-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .ai-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+    }
+
+    .copy-btn {
+      all: unset;
+      font-size: 11px;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 3px 8px;
+      border-radius: 6px;
+      transition: all 0.15s;
+      opacity: 0;
+    }
+
+    .ai:hover .copy-btn {
+      opacity: 1;
+    }
+
+    .copy-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text);
+    }
+
+    .ai-body {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px 18px 18px 18px;
+      padding: 14px 18px;
+      overflow-x: auto;
+    }
+
+    .ai-body h1,
+    .ai-body h2,
+    .ai-body h3 {
+      margin: 14px 0 6px;
+      font-size: 1em;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .ai-body h1:first-child,
+    .ai-body h2:first-child,
+    .ai-body h3:first-child {
+      margin-top: 0;
+    }
+
+    .ai-body p {
+      margin: 6px 0;
+    }
+
+    .ai-body ul,
+    .ai-body ol {
+      margin: 6px 0 6px 20px;
+    }
+
+    .ai-body li {
+      margin: 4px 0;
+    }
+
+    .ai-body code {
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.85em;
+      color: var(--text-dim);
+    }
+
+    .ai-body pre {
+      background: var(--pre-bg);
+      padding: 12px;
+      border-radius: 10px;
+      overflow-x: auto;
+      margin: 10px 0;
+      border: 1px solid var(--border-light);
+    }
+
+    .ai-body pre code {
+      background: none;
+      padding: 0;
+    }
+
+    .ai-body hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 12px 0;
+    }
+
+    .ai-body strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .ai-body table {
+      border-collapse: collapse;
+      margin: 10px 0;
+      width: 100%;
+      font-size: 0.88em;
+    }
+
+    .ai-body th,
+    .ai-body td {
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      text-align: left;
+    }
+
+    .ai-body th {
+      background: var(--table-header);
+      color: var(--text-dim);
+      font-weight: 500;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .ai-body a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+
+    .ai-body a:hover {
+      text-decoration: underline;
+    }
+
+    .ai-body blockquote {
+      border-left: 3px solid var(--border);
+      padding-left: 12px;
+      color: var(--text-muted);
+      margin: 8px 0;
+    }
+
+    /* ── Thinking ── */
+    .thinking {
+      align-self: flex-start;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 4px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .bar {
+      display: flex;
+      gap: 3px;
+    }
+
+    .bar span {
+      display: block;
+      width: 3px;
+      height: 14px;
+      border-radius: 2px;
+      background: var(--text-muted);
+      animation: bars 1s infinite ease-in-out;
+    }
+
+    .bar span:nth-child(1) {
+      animation-delay: 0s
+    }
+
+    .bar span:nth-child(2) {
+      animation-delay: .15s
+    }
+
+    .bar span:nth-child(3) {
+      animation-delay: .3s
+    }
+
+    .bar span:nth-child(4) {
+      animation-delay: .45s
+    }
+
+    @keyframes bars {
+
+      0%,
+      100% {
+        height: 8px;
+        opacity: .4
+      }
+
+      50% {
+        height: 18px;
+        opacity: 1
+      }
+    }
+
+    .timer {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── Welcome ── */
+    .welcome {
+      align-self: center;
+      text-align: center;
+      padding: 80px 20px 40px;
+      max-width: 460px;
+    }
+
+    .welcome h2 {
+      font-size: 28px;
+      font-weight: 300;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+
+    .welcome h2 b {
+      font-weight: 600;
+    }
+
+    .welcome p {
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .suggestions {
+      margin-top: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .suggestions button {
+      all: unset;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--text-dim);
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+
+    .suggestions button:hover {
+      background: var(--surface-hover);
+      border-color: var(--text-muted);
+      color: var(--text);
+    }
+
+    /* ── Setup screen ── */
+    .setup {
+      align-self: center;
+      text-align: center;
+      padding: 80px 20px 40px;
+      max-width: 440px;
+    }
+
+    .setup h2 {
+      font-size: 28px;
+      font-weight: 300;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+
+    .setup h2 b {
+      font-weight: 600;
+    }
+
+    .setup p {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .setup a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+
+    .setup a:hover {
+      text-decoration: underline;
+    }
+
+    .setup input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      margin-bottom: 12px;
+    }
+
+    .setup input:focus {
+      border-color: var(--text-muted);
+    }
+
+    .setup input::placeholder {
+      color: var(--text-placeholder);
+    }
+
+    .setup-btn {
+      all: unset;
+      box-sizing: border-box;
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      font-size: 14px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+
+    .setup-btn:hover {
+      background: var(--btn-hover);
+    }
+
+    .setup-error {
+      color: var(--red);
+      font-size: 13px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* ── Image preview bar ── */
+    #imagePreview {
+      display: none;
+      padding: 8px 24px;
+      gap: 10px;
+      align-items: center;
+      border-top: 1px solid var(--border-light);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+
+    #imagePreview img {
+      max-height: 64px;
+      max-width: 100px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      object-fit: cover;
+    }
+
+    #imagePreview .remove-img {
+      all: unset;
+      font-size: 18px;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 6px;
+      line-height: 1;
+    }
+
+    #imagePreview .remove-img:hover {
+      color: var(--red);
+    }
+
+    #imagePreview .img-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ── Input area ── */
+    #form {
+      display: flex;
+      padding: 14px 24px 18px;
+      gap: 8px;
+      padding-bottom: max(18px, env(safe-area-inset-bottom));
+      padding-left: max(24px, env(safe-area-inset-left));
+      padding-right: max(24px, env(safe-area-inset-right));
+      border-top: 1px solid var(--border-light);
+      align-items: flex-end;
+      flex-shrink: 0;
+    }
+
+    .input-btn {
+      all: unset;
+      box-sizing: border-box;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+
+    .input-btn:hover {
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    #input {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      resize: none;
+      min-height: 44px;
+      max-height: 150px;
+      line-height: 1.5;
+      transition: all 0.2s;
+    }
+
+    #input:focus {
+      border-color: var(--text-muted);
+      background: var(--surface-hover);
+    }
+
+    #input::placeholder {
+      color: var(--text-placeholder);
+    }
+
+    #input:disabled {
+      opacity: 0.5;
+    }
+
+    button[type="submit"] {
+      padding: 12px 24px;
+      border-radius: 14px;
+      border: none;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      font-size: 14px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s;
+      flex-shrink: 0;
+      height: 44px;
+    }
+
+    button[type="submit"]:hover {
+      background: var(--btn-hover);
+    }
+
+    button[type="submit"]:active {
+      transform: scale(0.97);
+    }
+
+    button[type="submit"]:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* ── Portfolio side panel ── */
+    .portfolio-panel {
+      width: 380px;
+      border-left: 1px solid var(--border);
+      background: var(--bg);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .portfolio-panel.open {
+      display: flex;
+    }
+
+    .panel-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .panel-header h2 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .panel-close {
+      all: unset;
+      font-size: 18px;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 6px;
+      line-height: 1;
+    }
+
+    .panel-close:hover {
+      color: var(--text);
+    }
+
+    .panel-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 18px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .panel-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      margin: 14px 0 8px;
+    }
+
+    .section-label:first-child {
+      margin-top: 0;
+    }
+
+    .holding-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      margin-bottom: 4px;
+      transition: background 0.15s;
+    }
+
+    .holding-row:hover {
+      background: var(--surface);
+    }
+
+    .holding-ticker {
+      font-weight: 600;
+      font-size: 13px;
+      min-width: 65px;
+    }
+
+    .holding-detail {
+      font-size: 12px;
+      color: var(--text-dim);
+      flex: 1;
+    }
+
+    .holding-value {
+      font-size: 12px;
+      color: var(--text-dim);
+      text-align: right;
+      min-width: 60px;
+    }
+
+    .holding-remove {
+      all: unset;
+      font-size: 14px;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 2px 5px;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .holding-row:hover .holding-remove {
+      opacity: 1;
+    }
+
+    .holding-remove:hover {
+      color: var(--red);
+    }
+
+    .panel-footer {
+      padding: 12px 18px;
+      border-top: 1px solid var(--border-light);
+      flex-shrink: 0;
+    }
+
+    .panel-footer-actions {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .panel-footer-actions button {
+      all: unset;
+      flex: 1;
+      padding: 8px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 500;
+      font-family: inherit;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .panel-footer-actions button:hover {
+      color: var(--text);
+      background: var(--surface-hover);
+    }
+
+    .add-btn {
+      all: unset;
+      box-sizing: border-box;
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .add-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text);
+    }
+
+    .add-form {
+      margin-top: 10px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .add-form.open {
+      display: flex;
+    }
+
+    .add-form input {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .add-form input:focus {
+      border-color: var(--text-muted);
+    }
+
+    .add-form input::placeholder {
+      color: var(--text-placeholder);
+    }
+
+    .add-form-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .add-form-actions button {
+      all: unset;
+      flex: 1;
+      padding: 8px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-confirm {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+    }
+
+    .btn-confirm:hover {
+      opacity: 0.85;
+    }
+
+    .btn-cancel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+
+    .btn-cancel:hover {
+      color: var(--text);
+    }
+
+    /* ── Watermark ── */
+    .watermark {
+      position: fixed;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      font-size: 10px;
+      color: var(--text-muted);
+      opacity: 0.5;
+      pointer-events: none;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+
+    /* ── Drag & drop overlay ── */
+    .drop-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .drop-overlay.active {
+      display: flex;
+    }
+
+    .drop-box {
+      padding: 40px 60px;
+      border: 2px dashed rgba(255, 255, 255, 0.3);
+      border-radius: 20px;
+      text-align: center;
+    }
+
+    /* ── Tablet / small desktop ── */
+    @media (max-width: 768px) {
+      .app-layout {
+        z-index: auto;
+      }
+
+      .header {
+        padding: 12px 16px;
+        gap: 8px;
+      }
+
+      .header-btn {
+        min-height: 44px;
+        min-width: 44px;
+        justify-content: center;
+        padding: 6px;
+      }
+
+      .header-btn span.label {
+        display: none;
+      }
+
+      #messages {
+        padding: 16px;
+        gap: 14px;
+      }
+
+      .msg {
+        max-width: 88%;
+        font-size: 13.5px;
+      }
+
+      .copy-btn {
+        opacity: 1;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .suggestions button {
+        padding: 14px 16px;
+      }
+
+      .remove-img {
+        padding: 8px 10px;
+        font-size: 20px;
+      }
+
+      #form {
+        padding: 12px 16px 16px;
+        gap: 6px;
+      }
+
+      #input {
+        padding: 10px 14px;
+        font-size: 16px;
+      }
+
+      button[type="submit"] {
+        padding: 10px 16px;
+      }
+
+      .welcome,
+      .setup {
+        padding: 40px 16px 20px;
+      }
+
+      .welcome h2,
+      .setup h2 {
+        font-size: 22px;
+      }
+
+      #imagePreview {
+        padding: 8px 16px;
+      }
+
+      /* Portfolio: full-screen overlay on mobile — must cover header */
+      .portfolio-panel {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        z-index: 100;
+        background: var(--bg);
+        border-left: none;
+      }
+
+      .panel-header {
+        padding: 16px 20px;
+        padding-top: max(16px, env(safe-area-inset-top));
+      }
+
+      .panel-header h2 {
+        font-size: 16px;
+      }
+
+      .panel-close {
+        padding: 10px 14px;
+        font-size: 22px;
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .panel-body {
+        padding: 16px 20px;
+      }
+
+      .panel-meta {
+        font-size: 13px;
+        gap: 14px;
+      }
+
+      .section-label {
+        font-size: 12px;
+        margin: 16px 0 10px;
+      }
+
+      .holding-row {
+        padding: 10px;
+        gap: 10px;
+      }
+
+      .holding-ticker {
+        font-size: 14px;
+        min-width: 55px;
+      }
+
+      .holding-detail {
+        font-size: 13px;
+      }
+
+      .holding-value {
+        font-size: 13px;
+      }
+
+      .holding-remove {
+        opacity: 1;
+        padding: 8px;
+        font-size: 16px;
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .panel-footer {
+        padding: 14px 20px;
+        padding-bottom: max(14px, env(safe-area-inset-bottom));
+      }
+
+      .panel-footer-actions {
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .panel-footer-actions button {
+        padding: 10px;
+        font-size: 13px;
+      }
+
+      .add-btn {
+        padding: 12px;
+        font-size: 14px;
+      }
+
+      .add-form {
+        gap: 8px;
+      }
+
+      .add-form input {
+        padding: 10px 14px;
+        font-size: 14px;
+      }
+
+      .add-form-actions {
+        gap: 8px;
+      }
+
+      .add-form-actions button {
+        padding: 10px;
+        font-size: 13px;
+      }
+    }
+
+    /* ── Small phone (≤480px) ── */
+    @media (max-width: 480px) {
+      .header {
+        padding: 10px 12px;
+        gap: 6px;
+      }
+
+      .header .icon {
+        width: 28px;
+        height: 28px;
+        font-size: 13px;
+        border-radius: 8px;
+      }
+
+      .header h1 {
+        font-size: 13px;
+      }
+
+      .header-actions {
+        gap: 1px;
+      }
+
+      .header-btn {
+        min-height: 36px;
+        min-width: 36px;
+        padding: 4px;
+      }
+
+      .header-btn svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      #messages {
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .msg {
+        max-width: 94%;
+        font-size: 13px;
+      }
+
+      .user {
+        padding: 10px 14px;
+        border-radius: 16px 16px 4px 16px;
+      }
+
+      .user img {
+        max-width: 160px;
+        max-height: 120px;
+      }
+
+      .ai-body {
+        padding: 12px 14px;
+        border-radius: 4px 16px 16px 16px;
+      }
+
+      .ai-body table {
+        font-size: 0.82em;
+      }
+
+      .ai-body th,
+      .ai-body td {
+        padding: 6px 8px;
+      }
+
+      .welcome,
+      .setup {
+        padding: 24px 12px 16px;
+      }
+
+      .welcome h2,
+      .setup h2 {
+        font-size: 20px;
+      }
+
+      .welcome p,
+      .setup p {
+        font-size: 13px;
+      }
+
+      .suggestions button {
+        padding: 12px 14px;
+        font-size: 12px;
+      }
+
+      #form {
+        padding: 10px 12px 14px;
+        gap: 6px;
+      }
+
+      .input-btn {
+        width: 40px;
+        height: 40px;
+      }
+
+      #input {
+        padding: 10px 12px;
+        border-radius: 12px;
+        min-height: 40px;
+      }
+
+      button[type="submit"] {
+        padding: 10px 14px;
+        font-size: 13px;
+        border-radius: 12px;
+        height: 40px;
+      }
+
+      #imagePreview {
+        padding: 6px 12px;
+      }
+
+      .drop-box {
+        padding: 30px 20px;
+        font-size: 16px;
+      }
+
+      /* Portfolio panel — small phone */
+      .panel-header {
+        padding: 14px 16px;
+      }
+
+      .panel-body {
+        padding: 14px 16px;
+      }
+
+      .holding-row {
+        padding: 10px 8px;
+        flex-wrap: wrap;
+      }
+
+      .holding-ticker {
+        min-width: 55px;
+        font-size: 13px;
+      }
+
+      .holding-detail {
+        font-size: 12px;
+      }
+
+      .holding-value {
+        font-size: 12px;
+      }
+
+      .panel-footer {
+        padding: 12px 16px;
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+      }
+
+      .add-form input {
+        font-size: 16px;
+      }
+    }
+
+    /* ── Tiny phone (≤360px) ── */
+    @media (max-width: 360px) {
+      .header {
+        padding: 8px 8px;
+        gap: 4px;
+      }
+
+      .header .icon {
+        width: 26px;
+        height: 26px;
+        font-size: 12px;
+        border-radius: 7px;
+      }
+
+      .header h1 {
+        font-size: 12px;
+      }
+
+      .header-actions {
+        gap: 0;
+      }
+
+      .header-btn {
+        min-height: 32px;
+        min-width: 32px;
+        padding: 2px;
+      }
+
+      .header-btn svg {
+        width: 13px;
+        height: 13px;
+      }
+
+      #messages {
+        padding: 10px;
+        gap: 10px;
+      }
+
+      .msg {
+        max-width: 96%;
+      }
+
+      #form {
+        padding: 8px 10px 12px;
+        gap: 4px;
+      }
+
+      .input-btn {
+        width: 36px;
+        height: 36px;
+      }
+
+      #input {
+        padding: 8px 10px;
+        font-size: 16px;
+      }
+
+      button[type="submit"] {
+        padding: 8px 10px;
+        font-size: 12px;
+        height: 36px;
+      }
+
+      .welcome,
+      .setup {
+        padding: 20px 10px 14px;
+      }
+
+      .welcome h2,
+      .setup h2 {
+        font-size: 18px;
+      }
+
+      .setup input {
+        padding: 10px 12px;
+      }
+
+      .setup-btn {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a href="#input" class="skip-link">Skip to chat input</a>
+
+  <div class="bg-layer" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <header class="header" role="banner">
+    <div class="icon" aria-hidden="true">$</div>
+    <h1>InvestAI</h1>
+    <nav class="header-actions" aria-label="Actions">
+      <button class="header-btn" id="exportBtn" onclick="exportChat()" aria-label="Export chat">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          aria-hidden="true">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+        <span class="label">Export</span>
+      </button>
+      <button class="header-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          aria-hidden="true">
+          <circle cx="12" cy="12" r="5" />
+          <path
+            d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+        <span class="label">Theme</span>
+      </button>
+      <button class="header-btn" id="portfolioBtn" onclick="togglePortfolio()" aria-label="Toggle portfolio panel"
+        aria-expanded="false" aria-controls="portfolioPanel">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          aria-hidden="true">
+          <rect x="2" y="7" width="20" height="14" rx="2" />
+          <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" />
+        </svg>
+        <span class="label">Portfolio</span>
+      </button>
+      <button class="header-btn" onclick="newChat()" aria-label="New chat">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          aria-hidden="true">
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        <span class="label">New Chat</span>
+      </button>
+      <button class="header-btn" id="keyBtn" onclick="showSetup()" aria-label="Change API key">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          aria-hidden="true">
+          <path
+            d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
+        </svg>
+        <span class="label">API Key</span>
+      </button>
+    </nav>
+  </header>
+
+  <div class="app-layout">
+    <main class="chat-main">
+      <div id="messages" role="log" aria-live="polite" aria-label="Chat messages"></div>
+      <div id="imagePreview" role="status">
+        <img id="previewImg" alt="Attached image preview">
+        <span class="img-label">Image attached</span>
+        <button class="remove-img" onclick="clearImage()" aria-label="Remove attached image">&times;</button>
+      </div>
+      <form id="form" aria-label="Chat input">
+        <input type="file" id="imageInput" accept="image/jpeg,image/png,image/webp,image/gif" hidden aria-hidden="true">
+        <input type="file" id="portfolioImport" accept=".json" hidden aria-hidden="true">
+        <button type="button" class="input-btn" onclick="document.getElementById('imageInput').click()"
+          aria-label="Attach image">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+            aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="3" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <path d="M21 15l-5-5L5 21" />
+          </svg>
+        </button>
+        <textarea id="input" rows="1" placeholder="Message InvestAI..." autocomplete="off"
+          aria-label="Type your message"></textarea>
+        <button type="submit" aria-label="Send message">Send</button>
+      </form>
+    </main>
+
+    <aside class="portfolio-panel" id="portfolioPanel" aria-label="Portfolio panel">
+      <div class="panel-header">
+        <h2>My Portfolio</h2>
+        <button class="panel-close" onclick="togglePortfolio()" aria-label="Close portfolio panel">&times;</button>
+      </div>
+      <div class="panel-body" id="portfolioContent" role="region" aria-label="Holdings list"></div>
+      <div class="panel-footer">
+        <div class="panel-footer-actions">
+          <button onclick="document.getElementById('portfolioImport').click()">Import JSON</button>
+          <button onclick="exportPortfolio()">Export JSON</button>
+        </div>
+        <button class="add-btn" onclick="toggleAddForm()">+ Add Holding</button>
+        <div class="add-form" id="addForm">
+          <input type="text" id="addTicker" placeholder="Ticker (e.g. AAPL)" aria-label="Stock ticker">
+          <input type="number" id="addShares" placeholder="Shares" step="any" aria-label="Number of shares">
+          <input type="number" id="addPrice" placeholder="Avg price $ (optional)" step="any"
+            aria-label="Average price (optional)">
+          <input type="text" id="addNotes" placeholder="Notes (optional)" aria-label="Notes (optional)">
+          <div class="add-form-actions">
+            <button class="btn-confirm" onclick="submitAddHolding()">Add</button>
+            <button class="btn-cancel" onclick="toggleAddForm()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="watermark" aria-hidden="true">Made by Ivan Moshak for AI Hackfest</div>
+
+  <!-- Drag & drop overlay -->
+  <div class="drop-overlay" id="dropOverlay" role="status" aria-live="assertive">
+    <div class="drop-box">Drop image here</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11/highlight.min.js"></script>
+  <script type="module">
+    import { GoogleGenAI } from "https://esm.run/@google/genai";
+
+    // ── Globals ──
+    const messagesEl = document.getElementById("messages");
+    const form = document.getElementById("form");
+    const input = document.getElementById("input");
+
+    marked.setOptions({
+      highlight: (code, lang) => {
+        if (lang && hljs.getLanguage(lang)) return hljs.highlight(code, { language: lang }).value;
+        return hljs.highlightAuto(code).value;
+      }
+    });
+
+    // ── Theme ──
+    const HLJS_DARK = "https://cdn.jsdelivr.net/npm/highlight.js@11/styles/github-dark-dimmed.min.css";
+    const HLJS_LIGHT = "https://cdn.jsdelivr.net/npm/highlight.js@11/styles/github.min.css";
+    const savedTheme = localStorage.getItem("investai-theme") || "dark";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+    document.getElementById("hljs-theme").href = savedTheme === "dark" ? HLJS_DARK : HLJS_LIGHT;
+    window.toggleTheme = function () {
+      const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      document.getElementById("hljs-theme").href = next === "dark" ? HLJS_DARK : HLJS_LIGHT;
+      localStorage.setItem("investai-theme", next);
+    };
+
+    // ── System prompt ──
+    const SYSTEM_PROMPT = `You are an expert investment analyst AI assistant. You provide data-driven, unbiased analysis using real financial data.
+
+IMPORTANT RULES:
+- You NEVER give buy/sell financial advice — you provide analysis, scores, and frameworks so the user can make their own informed decisions.
+- Never say "you should buy/sell X" — instead say "the data suggests X scores well/poorly on Y metrics"
+- Present both bull and bear cases when analyzing stocks
+- Flag uncertainty explicitly with confidence levels
+- Always include: "This is analysis, not financial advice. Do your own due diligence."
+
+WHAT YOU CAN HELP WITH:
+- Stock analysis (fundamentals, technicals, sentiment)
+- Portfolio review and risk assessment
+- Market overview and sector analysis
+- Stock screening by strategy (value, growth, dividend, momentum)
+- Position sizing and risk management
+- Comparing stocks side by side
+- Explaining investing concepts clearly
+- Analyzing images: charts, financial statements, screenshots of portfolios
+
+SCORING APPROACH:
+When rating stocks, use a 1-10 scale based on:
+- Fundamentals (35%): P/E, debt, FCF, ROE
+- Growth (20%): Revenue & EPS growth, margin trends
+- Technicals (15%): Moving averages, RSI, volume
+- Sentiment (15%): Insider activity, analyst ratings, news
+- Risk (15%): Red flags check
+
+ANTI-BIAS FRAMEWORK:
+1. Pre-mortem: Ask "What would make this analysis wrong?"
+2. Compare metrics to sector medians, not just absolute values
+3. Look at 3-5 year trends, not just last quarter
+4. For every bull point, state the bear counterargument
+
+PORTFOLIO CONTEXT:
+When the user asks about "my portfolio", "my holdings", or references their stocks — use the portfolio data provided below. Reference specific tickers, share counts, and cost basis. Provide concrete analysis based on their actual positions.
+
+Keep responses well-structured with markdown formatting. Use tables, headers, and bullet points for clarity.`;
+
+    // ── AI state ──
+    let ai = null;
+    const MAX_HISTORY = 20;
+    const history = [];
+
+    function initAI(apiKey) {
+      ai = new GoogleGenAI({ apiKey });
+    }
+
+    // ── Portfolio (localStorage) ──
+    const EMPTY_PORTFOLIO = {
+      last_updated: new Date().toISOString().slice(0, 10),
+      currency: "USD", cash_available: 0, risk_tolerance: "moderate",
+      holdings: [], non_stock_holdings: []
+    };
+
+    function getPortfolio() {
+      try {
+        return JSON.parse(localStorage.getItem("investai-portfolio")) || { ...EMPTY_PORTFOLIO };
+      } catch { return { ...EMPTY_PORTFOLIO }; }
+    }
+
+    function savePortfolio(p) {
+      p.last_updated = new Date().toISOString().slice(0, 10);
+      try { localStorage.setItem("investai-portfolio", JSON.stringify(p)); }
+      catch { /* localStorage full */ }
+    }
+
+    function portfolioToContext() {
+      const p = getPortfolio();
+      const lines = p.holdings.map(h => {
+        const price = h.avg_price ? `@ $${h.avg_price}` : "(price unknown)";
+        return `  ${h.ticker}: ${h.shares} shares ${price} — ${h.notes || ""}`;
+      });
+      const other = (p.non_stock_holdings || []).map(h => {
+        const val = h.value_usd
+          ? "$" + h.value_usd
+          : h.amount != null
+            ? h.amount + " units" + (h.avg_price ? ` @ $${h.avg_price}` : "")
+            : "unknown value";
+        return `  ${h.name}: ${val} — ${h.notes || ""}`;
+      });
+      return [
+        `User's Portfolio (updated ${p.last_updated}):`,
+        `Currency: ${p.currency} | Risk tolerance: ${p.risk_tolerance} | Cash: $${p.cash_available}`,
+        ``,
+        `Stock Holdings (${p.holdings.length}):`,
+        ...lines,
+        ``,
+        `Other Holdings:`,
+        ...other,
+      ].join("\n");
+    }
+
+    // ── Chat persistence ──
+    let chatMessages = JSON.parse(localStorage.getItem("investai-chat") || "[]");
+    function saveChat() {
+      try { localStorage.setItem("investai-chat", JSON.stringify(chatMessages)); }
+      catch { /* localStorage full — chat won't persist but app keeps working */ }
+    }
+
+    // ── Image state ──
+    let pendingImage = null;
+
+    window.handleImageFile = function (file) {
+      const ALLOWED = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+      if (!ALLOWED.includes(file.type)) return alert("Unsupported type. Use JPEG, PNG, WebP, or GIF.");
+      if (file.size > 10 * 1024 * 1024) return alert("Image too large. Max 10MB.");
+      const reader = new FileReader();
+      reader.onload = () => {
+        pendingImage = { data: reader.result.split(",")[1], mimeType: file.type };
+        document.getElementById("previewImg").src = reader.result;
+        document.getElementById("imagePreview").style.display = "flex";
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.clearImage = function () {
+      pendingImage = null;
+      document.getElementById("imagePreview").style.display = "none";
+      document.getElementById("previewImg").src = "";
+    };
+
+    // Paste handler
+    input.addEventListener("paste", (e) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (const item of items) {
+        if (item.type.startsWith("image/")) {
+          e.preventDefault();
+          handleImageFile(item.getAsFile());
+          return;
+        }
+      }
+    });
+
+    // File input handler
+    document.getElementById("imageInput").addEventListener("change", (e) => {
+      if (e.target.files[0]) handleImageFile(e.target.files[0]);
+      e.target.value = "";
+    });
+
+    // Drag & drop
+    let dragCounter = 0;
+    const overlay = document.getElementById("dropOverlay");
+    document.addEventListener("dragenter", (e) => { e.preventDefault(); dragCounter++; overlay.classList.add("active"); });
+    document.addEventListener("dragleave", (e) => { e.preventDefault(); dragCounter--; if (dragCounter <= 0) { dragCounter = 0; overlay.classList.remove("active"); } });
+    document.addEventListener("dragover", (e) => e.preventDefault());
+    document.addEventListener("drop", (e) => {
+      e.preventDefault(); dragCounter = 0; overlay.classList.remove("active");
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith("image/")) handleImageFile(file);
+    });
+
+    // ── Render helpers ──
+    function esc(str) {
+      const d = document.createElement("div");
+      d.textContent = str == null ? "" : str;
+      return d.innerHTML;
+    }
+
+    function addMessage(text, who, save = true, hasImage = false) {
+      const div = document.createElement("div");
+      div.className = "msg " + who;
+      if (who === "ai") {
+        const top = document.createElement("div");
+        top.className = "ai-top";
+        const label = document.createElement("div");
+        label.className = "ai-label";
+        label.textContent = "InvestAI";
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "copy-btn";
+        copyBtn.textContent = "Copy";
+        copyBtn.setAttribute("aria-label", "Copy response to clipboard");
+        copyBtn.onclick = () => {
+          navigator.clipboard.writeText(text);
+          copyBtn.textContent = "Copied!";
+          copyBtn.setAttribute("aria-label", "Copied to clipboard");
+          setTimeout(() => { copyBtn.textContent = "Copy"; copyBtn.setAttribute("aria-label", "Copy response to clipboard"); }, 1500);
+        };
+        const readBtn = document.createElement("button");
+        readBtn.className = "copy-btn";
+        readBtn.textContent = "Read";
+        readBtn.setAttribute("aria-label", "Read response aloud");
+        readBtn.onclick = () => speakText(text, readBtn);
+        top.appendChild(label);
+        top.appendChild(readBtn);
+        top.appendChild(copyBtn);
+        const body = document.createElement("div");
+        body.className = "ai-body";
+        body.innerHTML = DOMPurify.sanitize(marked.parse(text));
+        div.appendChild(top);
+        div.appendChild(body);
+      } else {
+        if (hasImage && !save) {
+          const note = document.createElement("span");
+          note.style.cssText = "font-size:12px;opacity:0.6;display:block;margin-bottom:4px;";
+          note.textContent = "[image attached]";
+          div.appendChild(note);
+        }
+        const span = document.createElement("span");
+        span.textContent = text;
+        div.appendChild(span);
+      }
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      if (save) { chatMessages.push({ who, text, hasImage }); saveChat(); }
+    }
+
+    function addUserMessageWithImage(text, imageDataUrl) {
+      const div = document.createElement("div");
+      div.className = "msg user";
+      const img = document.createElement("img");
+      img.src = imageDataUrl;
+      img.alt = "User uploaded image";
+      div.appendChild(img);
+      if (text) {
+        const span = document.createElement("span");
+        span.textContent = text;
+        div.appendChild(span);
+      }
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      chatMessages.push({ who: "user", text: text || "(sent an image)", hasImage: true });
+      saveChat();
+    }
+
+    function createStreamingMessage() {
+      const div = document.createElement("div");
+      div.className = "msg ai";
+      const top = document.createElement("div");
+      top.className = "ai-top";
+      const label = document.createElement("div");
+      label.className = "ai-label";
+      label.textContent = "InvestAI";
+      const copyBtn = document.createElement("button");
+      copyBtn.className = "copy-btn";
+      copyBtn.textContent = "Copy";
+      copyBtn.setAttribute("aria-label", "Copy response to clipboard");
+      const readBtn = document.createElement("button");
+      readBtn.className = "copy-btn";
+      readBtn.textContent = "Read";
+      readBtn.setAttribute("aria-label", "Read response aloud");
+      top.appendChild(label);
+      top.appendChild(readBtn);
+      top.appendChild(copyBtn);
+      const body = document.createElement("div");
+      body.className = "ai-body";
+      div.appendChild(top);
+      div.appendChild(body);
+      messagesEl.appendChild(div);
+      return { div, body, copyBtn, readBtn };
+    }
+
+    // ── Text-to-Speech ──
+    let currentUtterance = null;
+    function speakText(text, btn) {
+      // Stop if already speaking
+      if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+        if (btn) { btn.textContent = "Read"; btn.setAttribute("aria-label", "Read response aloud"); }
+        currentUtterance = null;
+        return;
+      }
+      // Strip markdown for cleaner speech
+      const clean = text
+        .replace(/```[\s\S]*?```/g, " code block omitted ")
+        .replace(/\|[^\n]+\|/g, "")  // skip table rows
+        .replace(/#{1,6}\s+/g, "")
+        .replace(/[*_~`]/g, "")
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+        .replace(/\n{2,}/g, ". ")
+        .replace(/\n/g, " ")
+        .trim();
+
+      const utterance = new SpeechSynthesisUtterance(clean);
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      currentUtterance = utterance;
+
+      if (btn) {
+        btn.textContent = "Stop";
+        btn.setAttribute("aria-label", "Stop reading aloud");
+        utterance.onend = () => { btn.textContent = "Read"; btn.setAttribute("aria-label", "Read response aloud"); currentUtterance = null; };
+        utterance.onerror = () => { btn.textContent = "Read"; btn.setAttribute("aria-label", "Read response aloud"); currentUtterance = null; };
+      }
+      speechSynthesis.speak(utterance);
+    }
+
+    // ── Thinking ──
+    let thinkingTimer = null;
+    function showThinking() {
+      const d = document.createElement("div");
+      d.className = "msg thinking"; d.id = "thinking";
+      d.setAttribute("role", "status"); d.setAttribute("aria-label", "AI is analyzing your request");
+      d.innerHTML = '<div class="bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div> Analyzing... <span class="timer" id="thinkTimer">0s</span>';
+      messagesEl.appendChild(d);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      const start = Date.now();
+      thinkingTimer = setInterval(() => {
+        const el = document.getElementById("thinkTimer");
+        if (el) el.textContent = ((Date.now() - start) / 1000).toFixed(1) + "s";
+      }, 100);
+    }
+    function hideThinking() { clearInterval(thinkingTimer); const e = document.getElementById("thinking"); if (e) e.remove(); }
+
+    // ── Setup screen ──
+    function showSetupScreen() {
+      messagesEl.innerHTML = "";
+      const div = document.createElement("div");
+      div.className = "setup";
+      div.innerHTML = `
+        <h2>Set up <b>InvestAI</b></h2>
+        <p>Enter your Google Gemini API key to get started.<br>
+        Get one free at <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a></p>
+        <input type="password" id="apiKeyInput" placeholder="Paste your Gemini API key..." autocomplete="off" aria-label="Gemini API key">
+        <button class="setup-btn" id="saveKeyBtn">Save & Start</button>
+        <div class="setup-error" id="setupError" role="alert"></div>
+        <p style="margin-top:16px;font-size:12px;color:var(--text-muted);">Your key is stored in your browser only. It never leaves your device.</p>`;
+      messagesEl.appendChild(div);
+
+      document.getElementById("saveKeyBtn").addEventListener("click", validateAndSaveKey);
+      document.getElementById("apiKeyInput").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") validateAndSaveKey();
+      });
+    }
+
+    window.showSetup = function () {
+      localStorage.removeItem("investai-api-key");
+      ai = null;
+      history.length = 0;
+      chatMessages = []; saveChat();
+      showSetupScreen();
+    };
+
+    async function validateAndSaveKey() {
+      const keyInput = document.getElementById("apiKeyInput");
+      const errorEl = document.getElementById("setupError");
+      const btn = document.getElementById("saveKeyBtn");
+      const key = keyInput.value.trim();
+
+      if (!key) { errorEl.textContent = "Please enter an API key."; errorEl.style.display = "block"; return; }
+
+      btn.textContent = "Verifying...";
+      btn.style.opacity = "0.5";
+      btn.style.pointerEvents = "none";
+      errorEl.style.display = "none";
+
+      try {
+        const testAI = new GoogleGenAI({ apiKey: key });
+        const res = await testAI.models.generateContent({
+          model: "gemini-2.5-flash",
+          contents: "Reply with just the word OK",
+        });
+        if (!res.text) throw new Error("No response");
+
+        localStorage.setItem("investai-api-key", key);
+        initAI(key);
+        messagesEl.innerHTML = "";
+        showWelcome();
+        input.focus();
+      } catch (err) {
+        errorEl.textContent = "Invalid API key or connection error. Please check and try again.";
+        errorEl.style.display = "block";
+      } finally {
+        btn.textContent = "Save & Start";
+        btn.style.opacity = "";
+        btn.style.pointerEvents = "";
+      }
+    }
+
+    // ── Welcome ──
+    function showWelcome() {
+      const div = document.createElement("div");
+      div.className = "welcome";
+      div.innerHTML = `
+        <h2>How can I <b>help you</b> today?</h2>
+        <p>Your personal investing assistant. Ask anything about stocks, markets, or strategy. You can also paste or drop images.</p>
+        <div class="suggestions">
+          <button onclick="quickSend(this.textContent)">Show my portfolio analysis</button>
+          <button onclick="quickSend(this.textContent)">What's happening in the market today?</button>
+          <button onclick="quickSend(this.textContent)">Analyze AAPL stock for me</button>
+          <button onclick="quickSend(this.textContent)">Compare MSFT vs GOOG vs AMZN</button>
+        </div>`;
+      messagesEl.appendChild(div);
+    }
+
+    // ── Send (direct Gemini SDK) ──
+    let sending = false;
+    function setLocked(locked) {
+      sending = locked;
+      input.disabled = locked;
+      form.querySelector("button[type='submit']").disabled = locked;
+    }
+
+    async function send(text) {
+      if (sending || !ai) return;
+      const w = messagesEl.querySelector(".welcome");
+      if (w) w.remove();
+
+      const imageToSend = pendingImage;
+      const previewSrc = document.getElementById("previewImg").src;
+      clearImage();
+
+      if (imageToSend) {
+        addUserMessageWithImage(text, previewSrc);
+      } else {
+        addMessage(text || "", "user");
+      }
+
+      setLocked(true);
+      showThinking();
+
+      try {
+        // Build user parts
+        const userParts = [{ text: text || "Describe this image" }];
+        if (imageToSend) {
+          userParts.push({ inlineData: { mimeType: imageToSend.mimeType, data: imageToSend.data } });
+        }
+
+        // Store text-only in history
+        history.push({ role: "user", parts: [{ text: text || "(sent an image)" }] });
+        if (history.length > MAX_HISTORY) history.splice(0, history.length - MAX_HISTORY);
+
+        // Build contents: previous history + current message with image
+        const contents = [...history.slice(0, -1), { role: "user", parts: userParts }];
+
+        // Build system instruction with portfolio context
+        const context = portfolioToContext();
+        const systemInstruction = context
+          ? `${SYSTEM_PROMPT}\n\n--- USER'S PORTFOLIO DATA ---\n${context}`
+          : SYSTEM_PROMPT;
+
+        const response = await ai.models.generateContentStream({
+          model: "gemini-2.5-flash",
+          config: { systemInstruction },
+          contents,
+        });
+
+        hideThinking();
+        const { body, copyBtn, readBtn } = createStreamingMessage();
+        let fullText = "";
+
+        for await (const chunk of response) {
+          const t = chunk.text || "";
+          fullText += t;
+          body.innerHTML = DOMPurify.sanitize(marked.parse(fullText));
+          messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        if (!fullText) {
+          fullText = "Sorry, I couldn't generate a response. Please try again.";
+          body.innerHTML = DOMPurify.sanitize(marked.parse(fullText));
+        }
+
+        body.querySelectorAll("pre code").forEach(el => hljs.highlightElement(el));
+        copyBtn.onclick = () => {
+          navigator.clipboard.writeText(fullText);
+          copyBtn.textContent = "Copied!";
+          setTimeout(() => copyBtn.textContent = "Copy", 1500);
+        };
+        readBtn.onclick = () => speakText(fullText, readBtn);
+
+        history.push({ role: "model", parts: [{ text: fullText }] });
+        chatMessages.push({ who: "ai", text: fullText });
+        saveChat();
+
+      } catch (err) {
+        hideThinking();
+        const msg = err.message?.includes("API key") ? "Invalid API key. Click the key icon to update it."
+          : "Something went wrong. Please try again.";
+        addMessage(msg, "ai");
+      } finally {
+        setLocked(false);
+        input.focus();
+      }
+    }
+
+    window.quickSend = function (text) { send(text); };
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text && !pendingImage) return;
+      input.value = "";
+      input.style.height = "auto";
+      send(text);
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); }
+    });
+    input.addEventListener("input", () => {
+      input.style.height = "auto";
+      input.style.height = Math.min(input.scrollHeight, 150) + "px";
+    });
+
+    // ── New chat ──
+    window.newChat = function () {
+      chatMessages = []; saveChat();
+      history.length = 0;
+      messagesEl.innerHTML = "";
+      if (ai) showWelcome();
+      else showSetupScreen();
+    };
+
+    // ── Export chat ──
+    window.exportChat = function () {
+      if (chatMessages.length === 0) return;
+      const text = chatMessages.map(m =>
+        (m.who === "user" ? "You" : "InvestAI") + ":\n" + m.text
+      ).join("\n\n---\n\n");
+      const blob = new Blob([text], { type: "text/plain" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "investai-chat-" + new Date().toISOString().slice(0, 10) + ".txt";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    };
+
+    // ── Portfolio panel ──
+    window.togglePortfolio = function () {
+      const panel = document.getElementById("portfolioPanel");
+      const btn = document.getElementById("portfolioBtn");
+      panel.classList.toggle("open");
+      btn.classList.toggle("active");
+      const isOpen = panel.classList.contains("open");
+      btn.setAttribute("aria-expanded", isOpen);
+      if (isOpen) {
+        loadPortfolio();
+        panel.querySelector(".panel-close").focus();
+      } else {
+        btn.focus();
+      }
+    };
+
+    // Escape key closes portfolio panel
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        const panel = document.getElementById("portfolioPanel");
+        if (panel.classList.contains("open")) {
+          togglePortfolio();
+        }
+      }
+    });
+
+    function loadPortfolio() {
+      renderPortfolio(getPortfolio());
+    }
+
+    function renderPortfolio(data) {
+      const container = document.getElementById("portfolioContent");
+
+      if (data.holdings.length === 0 && (!data.non_stock_holdings || data.non_stock_holdings.length === 0)) {
+        container.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--text-muted);font-size:13px;">No holdings yet.<br>Add one below or import a JSON file.</div>';
+        return;
+      }
+
+      const totalCost = data.holdings.reduce((s, h) => s + h.shares * (h.avg_price || 0), 0);
+
+      let html = `<div class="panel-meta">
+        <span>${data.holdings.length} holdings</span>
+        <span>Cost ~$${totalCost.toLocaleString("en", { maximumFractionDigits: 0 })}</span>
+        <span>${esc(data.risk_tolerance)}</span>
+      </div>`;
+
+      if (data.holdings.length > 0) {
+        html += '<div class="section-label">Stock Holdings</div>';
+        for (const h of data.holdings) {
+          const ticker = esc(h.ticker);
+          const priceStr = h.avg_price ? `@ $${h.avg_price}` : "";
+          const val = h.avg_price ? (h.shares * h.avg_price).toFixed(0) : "\u2014";
+          const valStr = val === "\u2014" ? val : `$${Number(val).toLocaleString()}`;
+          html += `<div class="holding-row">
+            <span class="holding-ticker">${ticker}</span>
+            <span class="holding-detail">${h.shares} ${priceStr}</span>
+            <span class="holding-value">${valStr}</span>
+            <button class="holding-remove" data-ticker="${ticker}" title="Remove" aria-label="Remove ${ticker} from portfolio">&times;</button>
+          </div>`;
+        }
+      }
+
+      if (data.non_stock_holdings?.length > 0) {
+        html += '<div class="section-label">Other</div>';
+        for (const h of data.non_stock_holdings) {
+          const val = h.value_usd != null ? `$${h.value_usd.toLocaleString()}` : h.amount != null ? `${h.amount} units` : "\u2014";
+          html += `<div class="holding-row">
+            <span class="holding-ticker">${esc(h.name)}</span>
+            <span class="holding-detail">${esc(h.notes || "")}</span>
+            <span class="holding-value">${val}</span>
+          </div>`;
+        }
+      }
+      container.innerHTML = html;
+
+      container.querySelectorAll(".holding-remove[data-ticker]").forEach(btn => {
+        btn.addEventListener("click", () => removeStock(btn.dataset.ticker));
+      });
+    }
+
+    window.toggleAddForm = function () {
+      document.getElementById("addForm").classList.toggle("open");
+    };
+
+    window.submitAddHolding = function () {
+      const tickerInput = document.getElementById("addTicker");
+      const sharesInput = document.getElementById("addShares");
+      const priceInput = document.getElementById("addPrice");
+      const notesInput = document.getElementById("addNotes");
+
+      const ticker = tickerInput.value.trim();
+      const shares = parseFloat(sharesInput.value);
+      const priceVal = priceInput.value.trim();
+      const avgPrice = priceVal ? parseFloat(priceVal) : null;
+      const notes = notesInput.value.trim();
+
+      if (!ticker || isNaN(shares) || shares <= 0) return alert("Fill in a valid ticker and shares.");
+      if (priceVal && (isNaN(avgPrice) || avgPrice < 0)) return alert("Price must be a positive number.");
+
+      const p = getPortfolio();
+      const existing = p.holdings.find(h => h.ticker.toUpperCase() === ticker.toUpperCase());
+
+      if (existing) {
+        const totalShares = existing.shares + shares;
+        if (avgPrice != null && avgPrice > 0) {
+          if (existing.avg_price > 0) {
+            existing.avg_price = (existing.avg_price * existing.shares + avgPrice * shares) / totalShares;
+          } else {
+            existing.avg_price = avgPrice;
+          }
+        }
+        existing.shares = Math.round(totalShares * 1000) / 1000;
+        if (notes) existing.notes = notes;
+      } else {
+        p.holdings.push({
+          ticker: ticker.toUpperCase(), shares,
+          avg_price: avgPrice || 0,
+          date_added: new Date().toISOString().slice(0, 10),
+          notes
+        });
+      }
+
+      savePortfolio(p);
+      tickerInput.value = ""; sharesInput.value = ""; priceInput.value = ""; notesInput.value = "";
+      toggleAddForm();
+      loadPortfolio();
+
+      // Auto-fetch price from Gemini if user didn't provide one
+      const savedTicker = ticker.toUpperCase();
+      if ((avgPrice == null || avgPrice === 0) && ai) {
+        (async () => {
+          try {
+            const res = await ai.models.generateContent({
+              model: "gemini-2.5-flash",
+              contents: `What is the current stock price of ${savedTicker} in USD? Reply with ONLY the number, nothing else. Example: 187.42`,
+            });
+            const price = parseFloat(res.text?.trim());
+            if (!isNaN(price) && price > 0) {
+              const fresh = getPortfolio();
+              const h = fresh.holdings.find(h => h.ticker === savedTicker);
+              if (h && h.avg_price === 0) {
+                h.avg_price = price;
+                savePortfolio(fresh);
+                loadPortfolio();
+              }
+            }
+          } catch (e) { /* silent — holding stays with price 0 */ }
+        })();
+      }
+    };
+
+    function removeStock(ticker) {
+      if (!confirm(`Remove ${ticker} from portfolio?`)) return;
+      const p = getPortfolio();
+      p.holdings = p.holdings.filter(h => h.ticker.toUpperCase() !== ticker.toUpperCase());
+      savePortfolio(p);
+      loadPortfolio();
+    }
+
+    // ── Portfolio import/export ──
+    document.getElementById("portfolioImport").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result);
+          if (!data.holdings || !Array.isArray(data.holdings)) throw new Error("Invalid format");
+          savePortfolio(data);
+          loadPortfolio();
+        } catch {
+          alert("Invalid portfolio JSON file.");
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = "";
+    });
+
+    window.exportPortfolio = function () {
+      const p = getPortfolio();
+      if (p.holdings.length === 0 && (!p.non_stock_holdings || p.non_stock_holdings.length === 0)) {
+        return alert("No portfolio data to export.");
+      }
+      const blob = new Blob([JSON.stringify(p, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "portfolio.json";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    };
+
+    // ── Init ──
+    const savedKey = localStorage.getItem("investai-api-key");
+    if (savedKey) {
+      initAI(savedKey);
+      if (chatMessages.length > 0) {
+        chatMessages.forEach(m => {
+          addMessage(m.text, m.who, false, m.hasImage);
+          // Rebuild Gemini history so AI retains context after reload
+          history.push({
+            role: m.who === "user" ? "user" : "model",
+            parts: [{ text: m.text }]
+          });
+        });
+        // Trim to max history
+        if (history.length > MAX_HISTORY) history.splice(0, history.length - MAX_HISTORY);
+      } else {
+        showWelcome();
+      }
+    } else {
+      showSetupScreen();
+    }
+  </script>
+</body>
+
+</html>
