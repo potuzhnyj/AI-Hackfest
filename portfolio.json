@@ -1,0 +1,179 @@
+{
+  "currency": "USD",
+  "risk_tolerance": "moderate",
+  "cash_available": 0,
+  "holdings": [
+    {
+      "ticker": "VOO",
+      "shares": 1.68,
+      "avg_price": 624,
+      "notes": "S&P 500 ETF — core long-term hold"
+    },
+    {
+      "ticker": "VEU",
+      "shares": 12,
+      "avg_price": 79,
+      "notes": "All-World ex-US ETF — diversification"
+    },
+    {
+      "ticker": "GLD",
+      "shares": 0.6,
+      "avg_price": 433,
+      "notes": "Gold ETF — crash insurance"
+    },
+    {
+      "ticker": "MSFT",
+      "shares": 1.32,
+      "avg_price": 380,
+      "notes": "Big Tech — never sell"
+    },
+    {
+      "ticker": "AAPL",
+      "shares": 1.135,
+      "avg_price": 257,
+      "notes": "Big Tech — never sell"
+    },
+    {
+      "ticker": "GOOG",
+      "shares": 0.41,
+      "avg_price": 317,
+      "notes": "Big Tech — never sell"
+    },
+    {
+      "ticker": "AMZN",
+      "shares": 0.45,
+      "avg_price": 238,
+      "notes": "Big Tech — never sell"
+    },
+    { "ticker": "META", "shares": 0.09, "avg_price": 622, "notes": "Big Tech" },
+    {
+      "ticker": "SAP",
+      "shares": 2.45,
+      "avg_price": 167,
+      "notes": "International — never sell"
+    },
+    {
+      "ticker": "KT",
+      "shares": 13.25,
+      "avg_price": 22.4,
+      "notes": "International — S. Korea telecom"
+    },
+    {
+      "ticker": "AZN",
+      "shares": 1.23,
+      "avg_price": 202,
+      "notes": "International — pharma, never sell"
+    },
+    {
+      "ticker": "SE",
+      "shares": 2.36,
+      "avg_price": 85.6,
+      "notes": "International — SE Asia e-commerce"
+    },
+    {
+      "ticker": "RACE",
+      "shares": 0.4,
+      "avg_price": 350,
+      "notes": "International — luxury, never sell"
+    },
+    {
+      "ticker": "AMD",
+      "shares": 1.1,
+      "avg_price": 245,
+      "notes": "Semiconductors"
+    },
+    {
+      "ticker": "ASML",
+      "shares": 0.136,
+      "avg_price": 1471,
+      "notes": "Semiconductors — never sell"
+    },
+    {
+      "ticker": "NVDA",
+      "shares": 0.97,
+      "avg_price": 188,
+      "notes": "Semiconductors"
+    },
+    {
+      "ticker": "TTWO",
+      "shares": 1.71,
+      "avg_price": 201,
+      "notes": "Gaming — GTA VI catalyst Nov 2026"
+    },
+    { "ticker": "SONY", "shares": 9.17, "avg_price": 20.7, "notes": "Gaming" },
+    {
+      "ticker": "MO",
+      "shares": 2.7,
+      "avg_price": 66.7,
+      "notes": "Dividend & value"
+    },
+    {
+      "ticker": "PBR",
+      "shares": 8.11,
+      "avg_price": 22,
+      "notes": "Dividend & value — Brazil oil"
+    },
+    {
+      "ticker": "JPM",
+      "shares": 0.51,
+      "avg_price": 310,
+      "notes": "Dividend & value — banking"
+    },
+    {
+      "ticker": "MCD",
+      "shares": 0.32,
+      "avg_price": 303,
+      "notes": "Dividend & value"
+    },
+    {
+      "ticker": "TSLA",
+      "shares": 0.4,
+      "avg_price": 350,
+      "notes": "Speculative — watch P/E"
+    },
+    {
+      "ticker": "PLTR",
+      "shares": 1,
+      "avg_price": 133,
+      "notes": "Speculative — AI hype risk"
+    },
+    {
+      "ticker": "ORCL",
+      "shares": 1.11,
+      "avg_price": 150,
+      "notes": "Other tech — high debt, hold only"
+    },
+    {
+      "ticker": "APP",
+      "shares": 0.21,
+      "avg_price": 419,
+      "notes": "Other tech — SEC probe risk"
+    },
+    {
+      "ticker": "CRWD",
+      "shares": 0.2,
+      "avg_price": 400,
+      "notes": "Other tech — cybersecurity"
+    },
+    {
+      "ticker": "NET",
+      "shares": 0.3,
+      "avg_price": 180,
+      "notes": "Other tech — needs profitability"
+    }
+  ],
+  "non_stock_holdings": [
+    {
+      "name": "Ethereum",
+      "amount": 0.05,
+      "avg_price": 2220,
+      "notes": "Crypto"
+    },
+    {
+      "name": "Bitcoin",
+      "amount": 0.002292,
+      "avg_price": 72000,
+      "notes": "Crypto"
+    }
+  ]
+}

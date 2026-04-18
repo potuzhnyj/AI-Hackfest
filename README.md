@@ -7,6 +7,8 @@ Runs entirely in your browser. No server needed.
 ## Features
 
 - **AI Chat** — streaming responses with markdown, tables, and code highlighting
+- **Real-Time Data** — Google Search grounding gives the AI access to live stock prices, news, and earnings
+- **Model Selector** — choose between Gemini models (2.5 Flash, 2.5 Pro, 2.0 Flash, 1.5 Flash, 1.5 Pro)
 - **Image Analysis** — paste, upload, or drag & drop charts and financial screenshots
 - **Portfolio Management** — side panel to view, add, and remove holdings
 - **Portfolio-Aware AI** — the assistant knows your actual positions and gives concrete analysis
@@ -22,10 +24,11 @@ Runs entirely in your browser. No server needed.
 
 ## Setup
 
-1. Get a free Gemini API key at `https://aistudio.google.com/apikey`
+1. Get a free Gemini API key at [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
 2. Open `index.html` via a local server (see below) or visit the GitHub Pages link
 3. Paste your API key when prompted
-4. Start chatting
+4. Pick a model from the dropdown (default: Gemini 2.5 Flash)
+5. Start chatting
 
 ### Run locally
 
@@ -38,7 +41,11 @@ python3 -m http.server 8080
 npx serve .
 ```
 
-Then open `http://localhost:8080`
+Then open [http://localhost:8080](http://localhost:8080)
+
+### Free tier limits
+
+The Gemini free tier has per-model daily quotas (e.g. 20 requests/day for 2.5 Flash). If you hit the limit, switch to a different model using the dropdown — each model has its own quota.
 
 ## Deploy to GitHub Pages
 
@@ -91,21 +98,23 @@ Your portfolio is stored in your browser's localStorage. You can:
 
 ## Tech Stack
 
-| Layer    | Tech                                                |
-|----------|-----------------------------------------------------|
-| AI       | Google Gemini (`gemini-2.5-flash`) via browser SDK  |
-| Frontend | Vanilla HTML / CSS / JS (single file)               |
-| Markdown | marked.js + DOMPurify + highlight.js                |
-| TTS      | Web SpeechSynthesis API                             |
-| Storage  | localStorage (portfolio + chat + theme + API key)   |
-| Hosting  | GitHub Pages (static)                               |
+| Layer      | Tech                                                     |
+|------------|----------------------------------------------------------|
+| AI         | Google Gemini (user-selectable model) via browser SDK    |
+| Search     | Google Search grounding for real-time market data        |
+| Frontend   | Vanilla HTML / CSS / JS (single file)                    |
+| Markdown   | marked.js + DOMPurify + highlight.js                     |
+| TTS        | Web SpeechSynthesis API                                  |
+| Storage    | localStorage (portfolio + chat + theme + model + API key)|
+| Hosting    | GitHub Pages (static)                                    |
 
 ## Project Structure
 
 ```
-├── index.html       # The entire app (~1316 lines)
-├── TEST_CASES.md    # 222 test cases with pass/fail results
+├── index.html       # The entire app (~2477 lines)
+├── portfolio.json   # Sample portfolio for import
 ├── README.md
+├── LICENSE
 └── .gitignore
 ```
 
