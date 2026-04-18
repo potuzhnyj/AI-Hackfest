@@ -1712,6 +1712,13 @@ ANTI-BIAS FRAMEWORK:
 PORTFOLIO CONTEXT:
 When the user asks about "my portfolio", "my holdings", or references their stocks — use the portfolio data provided below. Reference specific tickers, share counts, and cost basis. Use Google Search to get current prices and calculate unrealized gains/losses. Provide concrete analysis based on their actual positions.
 
+MATH — BE PRECISE:
+- Users may have fractional shares. Pay close attention to share counts — 1.32 shares of a $400 stock = $528, NOT $4,000.
+- Before calculating portfolio value, FIRST use Google Search to look up the current price of EVERY holding.
+- ALWAYS show your work in a table: ticker | shares | current price | value (shares x price).
+- Add up each row to get the total — do not estimate or round prematurely.
+- If you cannot find a current price for a ticker, say so — never guess or use outdated prices.
+
 Keep responses well-structured with markdown formatting. Use tables, headers, and bullet points for clarity.`;
 
     // ── AI state ──
