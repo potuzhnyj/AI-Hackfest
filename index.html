@@ -258,36 +258,6 @@
       color: var(--text);
     }
 
-    .model-select {
-      all: unset;
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-family: inherit;
-      color: var(--text-muted);
-      cursor: pointer;
-      background: transparent;
-      border: 1px solid var(--border);
-      appearance: none;
-      -webkit-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 8px center;
-      padding-right: 24px;
-      transition: all 0.15s;
-    }
-
-    .model-select:hover,
-    .model-select:focus {
-      background-color: var(--surface);
-      color: var(--text);
-    }
-
-    .model-select option {
-      background: var(--bg);
-      color: var(--text);
-    }
-
     /* ── App layout ── */
     .app-layout {
       display: flex;
@@ -1138,12 +1108,6 @@
         display: none;
       }
 
-      .model-select {
-        font-size: 11px;
-        padding: 6px 20px 6px 8px;
-        max-width: 120px;
-      }
-
       #messages {
         padding: 16px;
         gap: 14px;
@@ -1342,12 +1306,6 @@
       .header-btn svg {
         width: 14px;
         height: 14px;
-      }
-
-      .model-select {
-        font-size: 10px;
-        padding: 4px 18px 4px 6px;
-        max-width: 100px;
       }
 
       #messages {
@@ -1605,13 +1563,6 @@
         </svg>
         <span class="label">New Chat</span>
       </button>
-      <select id="modelSelect" class="model-select" aria-label="Choose AI model" onchange="saveModel()">
-        <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
-        <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
-        <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
-        <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
-        <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
-      </select>
       <button class="header-btn" id="keyBtn" onclick="showSetup()" aria-label="Change API key">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           aria-hidden="true">
@@ -1770,15 +1721,8 @@ MATH — BE PRECISE:
 
 Keep responses well-structured with markdown formatting. Use tables, headers, and bullet points for clarity.`;
 
-    // ── Model selector ──
-    const modelSelect = document.getElementById("modelSelect");
-    const savedModel = localStorage.getItem("investai-model");
-    if (savedModel) modelSelect.value = savedModel;
-
-    function getModel() { return modelSelect.value; }
-    window.saveModel = function () { localStorage.setItem("investai-model", modelSelect.value); };
-
     // ── AI state ──
+    const MODEL = "gemini-3.1-pro-preview";
     let ai = null;
     const MAX_HISTORY = 20;
     const history = [];
@@ -2089,7 +2033,7 @@ Keep responses well-structured with markdown formatting. Use tables, headers, an
       try {
         const testAI = new GoogleGenAI({ apiKey: key });
         const res = await testAI.models.generateContent({
-          model: getModel(),
+          model: MODEL,
           contents: "Reply with just the word OK",
         });
         if (!res.text) throw new Error("No response");
@@ -2172,20 +2116,33 @@ Keep responses well-structured with markdown formatting. Use tables, headers, an
           : SYSTEM_PROMPT;
 
         const response = await ai.models.generateContentStream({
-          model: getModel(),
+          model: MODEL,
           config: { systemInstruction, tools: [{ googleSearch: {} }] },
           contents,
         });
 
-        hideThinking();
-        const { body, copyBtn, readBtn } = createStreamingMessage();
+        let messageCreated = false;
+        let body, copyBtn, readBtn;
         let fullText = "";
 
         for await (const chunk of response) {
+          if (!messageCreated) {
+            hideThinking();
+            ({ body, copyBtn, readBtn } = createStreamingMessage());
+            messageCreated = true;
+          }
           const t = chunk.text || "";
           fullText += t;
           body.innerHTML = DOMPurify.sanitize(marked.parse(fullText));
-          messagesEl.scrollTop = messagesEl.scrollHeight;
+          const el = messagesEl;
+          if (el.scrollHeight - el.scrollTop - el.clientHeight < 150) {
+            el.scrollTop = el.scrollHeight;
+          }
+        }
+
+        if (!messageCreated) {
+          hideThinking();
+          ({ body, copyBtn, readBtn } = createStreamingMessage());
         }
 
         if (!fullText) {
@@ -2395,7 +2352,7 @@ Keep responses well-structured with markdown formatting. Use tables, headers, an
         (async () => {
           try {
             const res = await ai.models.generateContent({
-              model: getModel(),
+              model: MODEL,
               contents: `What is the current stock price of ${savedTicker} in USD? Reply with ONLY the number, nothing else. Example: 187.42`,
               config: { tools: [{ googleSearch: {} }] },
             });

@@ -4,13 +4,12 @@ AI-powered personal investing assistant. Analyze stocks, review portfolios, and 
 
 Runs entirely in your browser. No server needed.
 
-[InvestAI](https://potuzhnyj.github.io/AI-Hackfest/)
+**[Live Demo](https://potuzhnyj.github.io/AI-Hackfest/)**
 
 ## Features
 
 - **AI Chat** — streaming responses with markdown, tables, and code highlighting
 - **Real-Time Data** — Google Search grounding gives the AI access to live stock prices, news, and earnings
-- **Model Selector** — choose between Gemini models (2.5 Flash, 2.5 Pro, 2.0 Flash, 1.5 Flash, 1.5 Pro)
 - **Image Analysis** — paste, upload, or drag & drop charts and financial screenshots
 - **Portfolio Management** — side panel to view, add, and remove holdings
 - **Portfolio-Aware AI** — the assistant knows your actual positions and gives concrete analysis
@@ -29,8 +28,7 @@ Runs entirely in your browser. No server needed.
 1. Get a free Gemini API key at [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
 2. Open `index.html` via a local server (see below) or visit the GitHub Pages link
 3. Paste your API key when prompted
-4. Pick a model from the dropdown (default: Gemini 2.5 Flash)
-5. Start chatting
+4. Start chatting
 
 ### Run locally
 
@@ -47,7 +45,7 @@ Then open [http://localhost:8080](http://localhost:8080)
 
 ### Free tier limits
 
-The Gemini free tier has per-model daily quotas (e.g. 20 requests/day for 2.5 Flash). If you hit the limit, switch to a different model using the dropdown — each model has its own quota.
+The Gemini free tier has daily request quotas (e.g. 20 requests/day). If you hit the limit, wait a minute and try again.
 
 ## Deploy to GitHub Pages
 
@@ -102,18 +100,18 @@ Your portfolio is stored in your browser's localStorage. You can:
 
 | Layer      | Tech                                                     |
 |------------|----------------------------------------------------------|
-| AI         | Google Gemini (user-selectable model) via browser SDK    |
+| AI         | Google Gemini 3.1 Pro via browser SDK                    |
 | Search     | Google Search grounding for real-time market data        |
 | Frontend   | Vanilla HTML / CSS / JS (single file)                    |
 | Markdown   | marked.js + DOMPurify + highlight.js                     |
 | TTS        | Web SpeechSynthesis API                                  |
-| Storage    | localStorage (portfolio + chat + theme + model + API key)|
+| Storage    | localStorage (portfolio + chat + theme + API key)        |
 | Hosting    | GitHub Pages (static)                                    |
 
 ## Project Structure
 
 ```
-├── index.html       # The entire app (~2477 lines)
+├── index.html       # The entire app (~2437 lines)
 ├── portfolio.json   # Sample portfolio for import
 ├── README.md
 ├── LICENSE
